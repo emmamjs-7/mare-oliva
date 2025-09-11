@@ -1,50 +1,49 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Container, Nav, Navbar } from 'react-bootstrap';
-import routes from '../routes';
+import { Container, Nav, Navbar } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import useNavbarToggle from "../utils/useNavbarToggle";
 
 export default function Header() {
+  const { expanded, toggle, close } = useNavbarToggle();
 
-  // whether the navbar is expanded or not
-  // (we use this to close it after a click/selection)
-  const [expanded, setExpanded] = useState(false);
+  return (
+    <header>
+      <Navbar
+        expand="md"
+        className="bg-primary"
+        data-bs-theme="dark"
+        fixed="top"
+        expanded={expanded}
+        onToggle={toggle}
+      >
+        <Container fluid>
 
-  //  get the current route
-  const pathName = useLocation().pathname;
-  const currentRoute = routes
-    .slice().sort((a, b) => a.path.length > b.path.length ? -1 : 1)
-    .find(x => pathName.indexOf(x.path.split(':')[0]) === 0);
-  // function that returns true if a menu item is 'active'
-  const isActive = (path: string) =>
-    path === currentRoute?.path || path === currentRoute?.parent;
+          <Navbar.Brand as={NavLink} to="/" end onClick={close}>
+            <img src="images/olives-svgrepo-com.svg" alt="olive bransch"
+              width={30}
+              height={30}
+              className="me-2"
+            />
+            Mare Oliva
+          </Navbar.Brand>
 
-  return <header>
-    <Navbar
-      expanded={expanded}
-      expand="md"
-      className="bg-primary"
-      data-bs-theme="dark"
-      fixed="top"
-    >
-      <Container fluid>
-        <Navbar.Brand className="me-5" as={Link} to="/">
-          The Good Grocery
-        </Navbar.Brand>
-        <Navbar.Toggle onClick={() => setExpanded(!expanded)} />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            {routes.filter(x => x.menuLabel).map(
-              ({ menuLabel, path }, i) =>
-                <Nav.Link
-                  as={Link} key={i} to={path}
-                  className={isActive(path) ? 'active' : ''}
-                  /* close menu after selection*/
-                  onClick={() => setTimeout(() => setExpanded(false), 200)}
-                >{menuLabel}</Nav.Link>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-  </header>;
-}
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link as={NavLink} to="/" end onClick={close}>
+                Home
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/menu" onClick={close}>
+                Menu
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/about" onClick={close}>
+                About
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
+};
+
+

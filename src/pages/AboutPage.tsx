@@ -1,8 +1,8 @@
 import { Row, Col } from 'react-bootstrap';
-import Image from '../parts/Image';
+
 
 AboutPage.route = {
-  path: '/about-us',
+  path: '/about',
   menuLabel: 'About us',
   index: 2
 };
@@ -12,10 +12,7 @@ export default function AboutPage() {
     <Row>
       <Col>
         <h2 className="text-primary">About us</h2>
-        <Image
-          src="/images/us.jpg"
-          alt="A group photo of our employees."
-        />
+
       </Col>
     </Row>
     <Row>
