@@ -2,7 +2,7 @@ import { Row, Col } from 'react-bootstrap';
 
 
 AboutPage.route = {
-  path: '/about-us',
+  path: '/about',
   menuLabel: 'About us',
   index: 2
 };
