@@ -8,6 +8,8 @@ export default function Header() {
   return (
     <header>
       <Navbar
+        as="nav"
+        aria-label="Main navigation"
         expand="md"
         className="bg-primary"
         data-bs-theme="dark"
@@ -16,9 +18,10 @@ export default function Header() {
         onToggle={toggle}
       >
         <Container fluid>
-
-          <Navbar.Brand as={NavLink} to="/" end onClick={close}>
-            <img src="images/olives-svgrepo-com.svg" alt="olive bransch"
+          <Navbar.Brand as={NavLink} to="/" end onClick={close} className="d-flex align-items-center">
+            <img
+              src="images/olives-svgrepo-com.svg"
+              alt="Mare Oliva logo"
               width={30}
               height={30}
               className="me-2"
@@ -26,17 +29,17 @@ export default function Header() {
             Mare Oliva
           </Navbar.Brand>
 
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          <Navbar.Toggle aria-controls="main-navbar-nav" />
+          <Navbar.Collapse id="main-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link as={NavLink} to="/" end onClick={close}>
                 Home
               </Nav.Link>
               <Nav.Link as={NavLink} to="/menu" onClick={close}>
-                Menu
+                Restaurant Menu
               </Nav.Link>
               <Nav.Link as={NavLink} to="/about" onClick={close}>
-                About
+                About Us
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
@@ -44,6 +47,4 @@ export default function Header() {
       </Navbar>
     </header>
   );
-};
-
-
+}
