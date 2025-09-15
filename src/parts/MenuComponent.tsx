@@ -1,29 +1,29 @@
 type MenuComponentProps = {
   id?: number;
-  title: string;
+  name: string;
   description?: string;
   imageUrl?: string;
-  price: number | string;
+  price_euro: number | string;
   vegetarian?: boolean;
   vegan?: boolean;
 };
 
 export default function MenuComponent({
   id,
-  title,
+  name,
   description,
   imageUrl,
-  price,
+  price_euro,
   vegetarian,
   vegan,
 }: MenuComponentProps) {
   const priceNumber =
-    typeof price === "number" ? price : Number(price ?? 0);
+    typeof price_euro === "number" ? price_euro : Number(price_euro ?? 0);
 
   return (
     <div className="menu-component" data-id={id}>
-      {imageUrl && <img src={imageUrl} alt={title} />}
-      <h3>{title}</h3>
+      {imageUrl && <img src={imageUrl} alt={name} />}
+      <h3>{name}</h3>
       {description && <p>{description}</p>}
       <p>Price: ${priceNumber.toFixed(2)}</p>
       <div>
