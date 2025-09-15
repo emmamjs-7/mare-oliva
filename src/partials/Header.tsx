@@ -35,12 +35,13 @@ export default function Header() {
               <Nav.Link as={NavLink} to="/" end onClick={close}>
                 Home
               </Nav.Link>
-              <Nav.Link as={NavLink} to="/menu" onClick={close}>
-                Restaurant Menu
-              </Nav.Link>
               <Nav.Link as={NavLink} to="/about" onClick={close}>
                 About Us
               </Nav.Link>
+              <Nav.Link as={NavLink} to="/menu" onClick={close}>
+                Restaurant Menu
+              </Nav.Link>
+
               <Nav.Link as={NavLink} to="/booking" onClick={close}>
                 Book a table
               </Nav.Link>
