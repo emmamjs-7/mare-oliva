@@ -1,7 +1,7 @@
 # Ignore the database being run
 # since SQLite might change it during runtime
 # + sessions will be stored in it in some examples
-# if the live.db is missing the backend will create it
+# if the _db.sqlite3 is missing the backend will create it
 # from template.db
 backend/_db.sqlite3
 backend/bin 

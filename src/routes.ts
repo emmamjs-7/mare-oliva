@@ -1,21 +1,17 @@
-import type Route from './interfaces/Route.ts';
-import { createElement } from 'react';
-
-// page components
-import AboutPage from './pages/AboutPage.tsx';
-import NotFoundPage from './pages/NotFoundPage.tsx';
-import MenuPage from './pages/MenuPage.tsx';
-import HomePage from './pages/HomePage.tsx';
-import BookingPage from './pages/BookingPage.tsx';
-
+import { createElement } from "react";
+import AboutPage from "./pages/AboutPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import MenuPage from "./pages/MenuPage";
+import HomePage from "./pages/HomePage";
+import BookingPage from "./pages/BookingPage";
+import type Route from "./interfaces/Route";
 
 export default [
   AboutPage,
   NotFoundPage,
   MenuPage,
   HomePage,
-  BookingPage
-
+  BookingPage,
 ]
   // map the route property of each page component to a Route
   .map(x => (({ element: createElement(x), ...x.route }) as Route))
