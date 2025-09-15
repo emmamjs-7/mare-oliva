@@ -1,23 +1,19 @@
-import type Route from './interfaces/Route.ts';
-import { createElement } from 'react';
+import type { RouteObject } from "react-router-dom";
+import { createElement } from "react";
+import AboutPage from "./pages/AboutPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import MenuPage from "./pages/MenuPage";
+import HomePage from "./pages/HomePage";
+import BookingPage from "./pages/BookingPage";
 
-// page components
-import AboutPage from './pages/AboutPage.tsx';
-import NotFoundPage from './pages/NotFoundPage.tsx';
-import MenuPage from './pages/MenuPage.tsx';
-import HomePage from './pages/HomePage.tsx';
-import BookingPage from './pages/BookingPage.tsx';
+type PageWithRoute = React.ComponentType & { route?: Partial<RouteObject> & { index?: number; }; };
 
+const pages: PageWithRoute[] = [AboutPage, NotFoundPage, MenuPage, HomePage, BookingPage];
 
-export default [
-  AboutPage,
-  NotFoundPage,
-  MenuPage,
-  HomePage,
-  BookingPage
-
-]
-  // map the route property of each page component to a Route
-  .map(x => (({ element: createElement(x), ...x.route }) as Route))
-  // sort by index (and if an item has no index, sort as index 0)
-  .sort((a, b) => (a.index || 0) - (b.index || 0));
+export default pages
+  .map((Comp) => {
+    const r = Comp.route;
+    if (!r) return null; // saknar route => hoppa över eller logga varning
+    return { ...r, element: createElement(Comp) } as RouteObject;
+  })
+  .filter(Boolean) as RouteObject[];
