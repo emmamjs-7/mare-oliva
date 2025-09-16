@@ -1,35 +1,27 @@
-type MenuComponentProps = {
-  id?: number;
-  name: string;
-  description?: string;
-  imageUrl?: string;
-  price_euro: number | string;
-  vegetarian?: boolean;
-  vegan?: boolean;
-};
+import type { MenuItem } from "../interfaces/Menu";
+import { Row, Col, Card } from "react-bootstrap";
 
-export default function MenuComponent({
-  id,
-  name,
-  description,
-  imageUrl,
-  price_euro,
-  vegetarian,
-  vegan,
-}: MenuComponentProps) {
+type Props = { item: MenuItem; };
+
+export default function MenuComponent({ item }: Props) {
+  const {
+    id, name, description, price_euro,
+  } = item;
+
   const priceNumber =
     typeof price_euro === "number" ? price_euro : Number(price_euro ?? 0);
 
   return (
-    <div className="menu-component" data-id={id}>
-      {imageUrl && <img src={imageUrl} alt={name} />}
-      <h3>{name}</h3>
-      {description && <p>{description}</p>}
-      <p>Price: ${priceNumber.toFixed(2)}</p>
-      <div>
-        {vegetarian && <span className="badge">Vegetarian</span>}
-        {vegan && <span className="badge">Vegan</span>}
-      </div>
-    </div>
+    <Row>
+      <Col className="text-center mb-3">
+        <Card className="menu-component" data-id={id}>
+          <Card.Body>
+            <Card.Title>{name}</Card.Title>
+            {description && <Card.Text>{description}</Card.Text>}
+            <Card.Text>Price: ${priceNumber.toFixed(2)}</Card.Text>
+          </Card.Body>
+        </Card>
+      </Col>
+    </Row>
   );
 }
