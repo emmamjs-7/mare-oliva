@@ -1,30 +1,34 @@
-import { useEffect, useState } from "react";
 import MenuComponent from "../parts/MenuComponent";
-
+import { useLoaderData } from "react-router-dom";
+import type { MenuItem } from "../interfaces/Menu";
 
 MenuPage.route = {
   path: '/menu',
   menuLabel: 'Menu',
-  index: 3
+  index: 3,
+  loader: async () => await (await fetch("/api/menu_items")).json()
 };
 
 export default function MenuPage() {
-  const [menuItems, setMenuItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const items = useLoaderData() as MenuItem[];
+  const groups = Object.groupBy(items, item => item.category ?? "Uncategorized");
 
-  useEffect(() => {
-    fetch("/api/menu_items")
-      .then(async (res) => {
-        const text = await res.text();
-        if (!res.ok) throw new Error(`${res.status} ${res.statusText} ${text}`);
-        setMenuItems(JSON.parse(text));
-      })
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false));
-  }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-  return <div>{menuItems.map((x: any) => <MenuComponent key={x.id} {...x} />)}</div>;
+  const desiredOrder = ["Antipasti", "Pasta", "Pizza", "Dolce"];
+  const orderedCats = [
+    ...desiredOrder.filter((c) => groups[c])
+  ];
+
+  return (
+    <div>
+      {orderedCats.map((cat) => (
+        <section key={cat} className="mb-5">
+          <h2 className="text-center mb-3">{cat}</h2>
+          {(groups[cat] ?? []).map((item) => (
+            <MenuComponent key={item.id} item={item} />
+          ))}
+        </section>
+      ))}
+    </div>
+  );
 }

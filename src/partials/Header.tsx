@@ -45,6 +45,9 @@ export default function Header() {
               <Nav.Link as={NavLink} to="/booking" onClick={close}>
                 Book a table
               </Nav.Link>
+              <Nav.Link as={NavLink} to="/create-dish" onClick={close}>
+                Add dish to menu
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
