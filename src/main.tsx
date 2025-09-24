@@ -9,7 +9,7 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 import type { RouteObject } from "react-router-dom";
 import CreateDish from "./pages/CreateDish";
 import { AuthProvider } from "./auth/AuthContext";
-
+import { menuDeleteAction } from "./utils/menuDeleteAction";
 
 const router = createBrowserRouter([
   {
@@ -24,8 +24,10 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoutes />,
         children: [
-          { path: "create-dish", element: <CreateDish /> }, // ✅ relativ path
+          { path: "create-dish", element: <CreateDish /> },
+          { path: "menu/:id", action: menuDeleteAction },
         ],
+
       },
     ],
   },
