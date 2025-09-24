@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage";
 import BookingPage from "./pages/BookingPage";
 import CreateDish from "./pages/CreateDish";
 import type Route from "./interfaces/Route";
-import LoginPage from "./pages/loginpage";
+import LoginPage from "./pages/loginPage";
 
 export default [
   AboutPage,
