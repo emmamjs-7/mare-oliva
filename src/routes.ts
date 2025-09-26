@@ -4,7 +4,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import MenuPage from "./pages/MenuPage";
 import HomePage from "./pages/HomePage";
 import BookingPage from "./pages/BookingPage";
-import CreateDish from "./pages/CreateDish";
+import CreateDish from "./pages/MenuItemEditor";
 import type Route from "./interfaces/Route";
 import LoginPage from "./pages/loginPage";
 

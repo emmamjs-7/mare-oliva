@@ -3,12 +3,14 @@ import { useLoaderData } from "react-router-dom";
 import type { MenuItem } from "../interfaces/Menu";
 import DeleteButton from "../parts/DeleteButton";
 import { useAuth } from "../auth/AuthContext";
+import { menuItemAction } from "../utils/menuItemAction";
 
 MenuPage.route = {
   path: '/menu',
   menuLabel: 'Menu',
   index: 3,
-  loader: async () => await (await fetch("/api/menu_items")).json()
+  loader: async () => await (await fetch("/api/menu_items", { credentials: "include" })).json(),
+  action: menuItemAction,
 };
 
 export default function MenuPage() {
@@ -30,12 +32,6 @@ export default function MenuPage() {
           {(groups[cat] ?? []).map((item) => (
             <div key={item.id} className="mb-3">
               <MenuComponent key={item.id} item={item} />
-              {isAdmin && (
-                <div className="text-center mb-3">
-                  <DeleteButton id={item.id} name={item.name} />
-                </div>
-              )}
-
             </div>
           ))}
 
