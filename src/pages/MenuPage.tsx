@@ -1,8 +1,6 @@
 import MenuComponent from "../parts/MenuComponent";
 import { useLoaderData } from "react-router-dom";
 import type { MenuItem } from "../interfaces/Menu";
-import DeleteButton from "../parts/DeleteButton";
-import { useAuth } from "../auth/AuthContext";
 import { menuItemAction } from "../utils/menuItemAction";
 
 MenuPage.route = {
@@ -16,8 +14,6 @@ MenuPage.route = {
 export default function MenuPage() {
   const items = useLoaderData() as MenuItem[];
   const groups = Object.groupBy(items, item => item.category ?? "Uncategorized");
-  const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
 
   const desiredOrder = ["Antipasti", "Pasta", "Pizza", "Dolce"];
   const orderedCats = [

@@ -1,5 +1,4 @@
-// auth/AuthContext.tsx
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useRevalidator } from "react-router-dom";
 import type { User, Role } from "./types";
 
@@ -8,6 +7,7 @@ type AuthContextValue = {
   isAdmin: boolean;
   isUser: boolean;
   isAuthenticated: boolean;
+  isLoading: boolean;                   // 👈 NYTT
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   hasRole: (required: Role) => boolean;
@@ -23,11 +23,26 @@ export function AuthProvider({
   initialUser?: User | null;
 }) {
   const [user, setUser] = useState<User | null>(initialUser);
+  const [isLoading, setIsLoading] = useState(true);
   const revalidator = useRevalidator();
 
   const isAdmin = user?.role === "admin";
   const isUser = user?.role === "user";
   const isAuthenticated = !!user;
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const r = await fetch("/api/login", { credentials: "include" });
+        const data = await r.json();
+        setUser(data?.error ? null : (data as User));
+      } catch {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
   async function login(email: string, password: string) {
     const response = await fetch("/api/login", {
@@ -40,14 +55,14 @@ export function AuthProvider({
     if (!response.ok || data?.error) {
       throw new Error(data?.error ?? "Login failed");
     }
-    setUser(data as User);         // backend skickar alltid role i lowercase
-    revalidator.revalidate();      // uppdatera loaders som lyssnar
+    setUser(data as User);
+    revalidator.revalidate();
   }
 
   async function logout() {
     await fetch("/api/login", {
       method: "DELETE",
-      credentials: "include",
+      credentials: "include"
     });
     setUser(null);
     revalidator.revalidate();
@@ -55,7 +70,6 @@ export function AuthProvider({
 
   function hasRole(required: Role) {
     return user?.role === required;
-
   }
 
   const value = useMemo(
@@ -64,11 +78,12 @@ export function AuthProvider({
       isAdmin,
       isUser,
       isAuthenticated,
+      isLoading,
       login,
       logout,
       hasRole,
     }),
-    [user, isAdmin, isUser, isAuthenticated]
+    [user, isAdmin, isUser, isAuthenticated, isLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
