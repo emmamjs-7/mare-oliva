@@ -7,12 +7,11 @@ type Props = {
   id: number | string;
   name?: string;
   variant?: string;
-  size?: "sm" | "lg";
   className?: string;
 };
 
 export default function DeleteButton({
-  id, name, variant = "outline-danger", size = "sm", className,
+  id, name, variant = "outline-danger", className,
 }: Props) {
   const fetcher = useFetcher();
   const busy = fetcher.state !== "idle";
@@ -27,7 +26,6 @@ export default function DeleteButton({
   return (<>
     <Button
       variant={variant}
-      size={size}
       className={className}
       onClick={() => setShow(true)}
       disabled={busy}
