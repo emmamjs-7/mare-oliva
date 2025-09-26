@@ -1,18 +1,23 @@
 import MenuComponent from "../parts/MenuComponent";
 import { useLoaderData } from "react-router-dom";
 import type { MenuItem } from "../interfaces/Menu";
+import DeleteButton from "../parts/DeleteButton";
+import { useAuth } from "../auth/AuthContext";
+import { menuItemAction } from "../utils/menuItemAction";
 
 MenuPage.route = {
   path: '/menu',
   menuLabel: 'Menu',
   index: 3,
-  loader: async () => await (await fetch("/api/menu_items")).json()
+  loader: async () => await (await fetch("/api/menu_items", { credentials: "include" })).json(),
+  action: menuItemAction,
 };
 
 export default function MenuPage() {
   const items = useLoaderData() as MenuItem[];
   const groups = Object.groupBy(items, item => item.category ?? "Uncategorized");
-
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const desiredOrder = ["Antipasti", "Pasta", "Pizza", "Dolce"];
   const orderedCats = [
@@ -25,8 +30,11 @@ export default function MenuPage() {
         <section key={cat} className="mb-5">
           <h2 className="text-center mb-3">{cat}</h2>
           {(groups[cat] ?? []).map((item) => (
-            <MenuComponent key={item.id} item={item} />
+            <div key={item.id} className="mb-3">
+              <MenuComponent key={item.id} item={item} />
+            </div>
           ))}
+
         </section>
       ))}
     </div>

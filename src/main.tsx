@@ -7,9 +7,10 @@ import App from "./App";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import type { RouteObject } from "react-router-dom";
-import CreateDish from "./pages/CreateDish";
 import { AuthProvider } from "./auth/AuthContext";
-
+import { menuItemAction } from "./utils/menuItemAction";
+import MenuItemEditor from "./pages/MenuItemEditor";
+import { menuItemLoader } from "./utils/menuItemLoader";
 
 const router = createBrowserRouter([
   {
@@ -24,10 +25,16 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoutes />,
         children: [
-          { path: "create-dish", element: <CreateDish /> }, // ✅ relativ path
+          { path: "create-dish", element: <MenuItemEditor /> },
+          { path: "menu/:id/edit", element: <MenuItemEditor />, loader: menuItemLoader },
         ],
+
       },
+
+      { path: "menu/:id", action: menuItemAction },
     ],
+  },
+  {
   },
 ]);
 
