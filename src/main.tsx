@@ -12,6 +12,12 @@ import { menuItemAction } from "./utils/menuItemAction";
 import MenuItemEditor from "./pages/MenuItemEditor";
 import { menuItemLoader } from "./utils/menuItemLoader";
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('service worker registered', reg))
+    .catch(err => console.log('service worker not registered', err));
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
