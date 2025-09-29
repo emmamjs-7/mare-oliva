@@ -34,11 +34,12 @@ export default function DeleteButton({
     </Button>
 
     <Modal show={show} onHide={() => setShow(false)} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Delete {name ?? `item #${id}`}</Modal.Title>
+      <Modal.Header closeButton className="position-relative text-danger">
+        <Modal.Title className="position-absolute start-50 translate-middle-x">Delete {name ?? `item #${id}`}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        Are you sure you want to delete {name ?? `item #${id}`}? This action cannot be undone.
+      <Modal.Body className="text-center">
+        <p>Are you sure you want to delete {name ?? `item #${id}`}?</p>
+        <p>This action cannot be undone.</p>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={() => setShow(false)} disabled={busy}>

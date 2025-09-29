@@ -1,5 +1,5 @@
 import { useFetcher, useLoaderData, useParams } from "react-router-dom";
-import { Alert, Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import DeleteButton from "../parts/DeleteButton";
 
 MenuItemEditor.route = {
@@ -24,6 +24,7 @@ export default function MenuItemEditor() {
   const editing = Boolean(id);
 
   const item = editing ? (useLoaderData() as MenuItem) : null;
+
   const save = useFetcher();
   const saving = save.state !== "idle";
   const method = editing ? "put" : "post";
@@ -36,30 +37,20 @@ export default function MenuItemEditor() {
           <h1 className="text-center mb-4">
             {editing ? `Edit: ${item?.name ?? ""}` : "Add New Dish"}
           </h1>
-
-          {save.data instanceof Response && !save.data.ok && (
-            <Alert variant="danger" className="mb-3">
-              Something went wrong. Please try again.
-            </Alert>
-          )}
         </Col>
       </Row>
 
-      <save.Form
-        key={editing ? String(id) : "new"}
-        method={method}
-        action={action}
-        noValidate
-      >
+      <save.Form key={editing ? String(id) : "new"} method={method} action={action}>
         <Row className="justify-content-center">
           <Col md={6}>
             <Form.Group controlId="name" className="mb-3">
               <Form.Label>Dish Name</Form.Label>
               <Form.Control
                 name="name"
+                placeholder="e.g. Margherita"
                 defaultValue={item?.name ?? ""}
                 required
-                placeholder="e.g. Margherita"
+                autoComplete="off"
               />
             </Form.Group>
 
@@ -69,21 +60,23 @@ export default function MenuItemEditor() {
                 as="textarea"
                 rows={3}
                 name="description"
-                defaultValue={item?.description ?? ""}
                 placeholder="Short description…"
+                defaultValue={item?.description ?? ""}
+                minLength={2}
+                maxLength={255}
               />
             </Form.Group>
 
             <Form.Group controlId="category" className="mb-3">
               <Form.Label>Category</Form.Label>
-              <Form.Select
-                name="category"
+              <Form.Select name="category"
                 defaultValue={item?.category ?? ""}
-                required
-              >
+                required>
                 <option value="">Select a category</option>
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
                 ))}
               </Form.Select>
             </Form.Group>
@@ -93,25 +86,31 @@ export default function MenuItemEditor() {
               <Form.Control
                 type="number"
                 inputMode="decimal"
-                min={0.01}
-                step={0.1}
                 name="price_euro"
-                defaultValue={item?.price_euro ?? 0}
+                min={1}
+                step={0.01}
                 required
+                defaultValue={item?.price_euro ?? 1}
               />
             </Form.Group>
-            <div className="d-flex justify-content-center">
-              <Button type="submit" disabled={saving} className="me-2">
-                {saving ? (<><Spinner size="sm" className="me-2" />Saving…</>) : "Save"}
+
+            <div className="d-flex justify-content-center gap-2">
+              <Button type="submit" disabled={saving}>
+                {saving ? (
+                  <>
+                    <Spinner size="sm" className="me-2" />
+                    Saving…
+                  </>
+                ) : (
+                  "Save"
+                )}
               </Button>
-              {editing && item && (
-                <DeleteButton id={item.id} name={item.name} />
-              )}
+
+              {editing && item && <DeleteButton id={item.id} name={item.name} />}
             </div>
           </Col>
         </Row>
       </save.Form>
-
     </>
   );
 }
