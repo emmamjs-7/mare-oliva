@@ -44,7 +44,7 @@ export default function MenuItemEditor() {
         <Row className="justify-content-center">
           <Col md={6}>
             <Form.Group controlId="name" className="mb-3">
-              <Form.Label>Dish Name</Form.Label>
+              <Form.Label>Name</Form.Label>
               <Form.Control
                 name="name"
                 placeholder="e.g. Margherita"
