@@ -12,7 +12,7 @@ export default function MenuComponent({ item }: Props) {
   const isAdmin = user?.role === "admin";
 
   const card = (
-    <Card className="menu-component" data-id={id}>
+    <Card className="menu-component border-info" data-id={id}>
       <Card.Body>
         <Card.Title>{name}</Card.Title>
         {description && <Card.Text>{description}</Card.Text>}

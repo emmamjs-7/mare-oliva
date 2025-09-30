@@ -4,7 +4,9 @@ $font-size-base: 1.1rem;
 $line-height-base: 1.4;
 $navbar-dark-color: rgba(white, .8) !default;
 $navbar-dark-hover-color: rgba(white, .9) !default;
-$primary: rgb(61, 99, 175);
+$primary: #bacfcd;
+$info: #ced4ce;
+$dark: #4b3621;
 $enable-negative-margins: true;
 
 // Import bootstrap
@@ -12,9 +14,13 @@ $enable-negative-margins: true;
 
 // import font
 @import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
+// Import react-calendar styles
 @import "react-calendar/dist/Calendar.css";
 
-// Override some Bootstrap defaults
+body {
+  background-color: #eee;
+}
+
 .navbar-brand {
   font-family: 'Allura', Verdana, Tahoma, sans-serif;
   font-size: 40px;
@@ -26,10 +32,76 @@ $enable-negative-margins: true;
   top: -6px;
 }
 
-.container {
-  max-width: 970px;
+.header-img {
+  position: relative;
+  width: 100%;
+  min-height: min(900px, 60dvh);
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 576px) {
+  .header-img {
+    min-height: clamp(220px, 42svh, 380px);
+    background-position: center;
+  }
+}
+
+.header-overlay {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .75) 0%, rgba(255, 255, 255, 0) 25%);
+}
+
+.navbar-glass {
+  background: rgba(240, 240, 243, 0.6) !important;
+  backdrop-filter: saturate(140%) blur(8px);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, .06);
+}
+
+.another-date-link:hover {
+  color: #698885 !important;
 }
 
 .footer-text {
   font-size: 13px;
+}
+
+.contact a {
+  color: $dark !important;
+}
+
+//Calendar
+.react-calendar {
+  background: $info;
+  color: #222324;
+  border: none;
+  border-radius: 17px;
+  padding: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.react-calendar__navigation button {
+  color: black;
+}
+
+
+
+.react-calendar :disabled {
+  background-color: #f9f8f6;
+}
+
+.react-calendar__tile {
+  color: black;
+  border-radius: 1px;
+  margin: 3px;
+}
+
+.react-calendar__tile:enabled:hover {
+  background: #e7eee7;
+}
+
+.react-calendar__tile--now {
+  background: #9fa49f;
 }
