@@ -4,58 +4,57 @@ import { redirect, type ActionFunctionArgs } from "react-router-dom";
 export async function menuItemAction({ params, request }: ActionFunctionArgs) {
   const method = request.method.toUpperCase();
 
-  if (method === "POST") {
+  if (method === "POST" || method === "PUT" || method === "PATCH") {
     const fd = await request.formData();
+
+    const price = Number(String(fd.get("price_euro") ?? "").replace(",", "."));
+    if (!Number.isFinite(price) || price < 1) {
+      toast.error("Minimum price is 1.00 €");
+      return Response.json({ formError: "Price must be at least 1.00 €" }, { status: 400 });
+    }
+
     const body = {
-      name: String(fd.get("name") ?? ""),
+      name: String(fd.get("name") ?? "").trim(),
       description: (fd.get("description") as string) || null,
       category: (fd.get("category") as string) || null,
-      price_euro: Number(fd.get("price_euro")),
+      price_euro: price,
     };
 
-    const res = await fetch("/api/menu_items", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) throw new Response("Create failed", { status: res.status });
-    toast.success("Dish created successfully");
-    return redirect("/menu");
-  }
+    const url = method === "POST" ? "/api/menu_items" : `/api/menu_items/${params.id}`;
 
-  const id = params.id;
-  if (!id) throw new Response("Menu item ID is required", { status: 400 });
-
-  if (method === "PUT" || method === "PATCH") {
-    const fd = await request.formData();
-    const body = {
-      name: String(fd.get("name") ?? ""),
-      description: (fd.get("description") as string) || null,
-      category: (fd.get("category") as string) || null,
-      price_euro: Number(fd.get("price_euro")),
-    };
-
-    const res = await fetch(`/api/menu_items/${id}`, {
+    const res = await fetch(url, {
       method,
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-    if (!res.ok) throw new Response("Update failed", { status: res.status });
-    toast.success("Dish updated successfully");
+
+    if (!res.ok) {
+      toast.error(method === "POST" ? "Create failed" : "Update failed");
+      return Response.json(
+        { formError: method === "POST" ? "Create failed" : "Update failed" },
+        { status: res.status }
+      );
+    }
+
+    toast.success(method === "POST" ? "Dish created" : "Dish updated");
     return redirect("/menu");
   }
 
   if (method === "DELETE") {
-    const res = await fetch(`/api/menu_items/${id}`, {
+    const res = await fetch(`/api/menu_items/${params.id}`, {
       method: "DELETE",
       credentials: "include",
     });
-    if (!res.ok) throw new Response("Delete failed", { status: res.status });
-    toast.success("Dish deleted successfully");
+
+    if (!res.ok) {
+      toast.error("Delete failed");
+      return Response.json({ formError: "Delete failed" }, { status: res.status });
+    }
+
+    toast.success("Dish deleted");
     return redirect("/menu");
   }
 
-  throw new Response("Method Not Allowed", { status: 405 });
+  return Response.json({ formError: "Method Not Allowed" }, { status: 405 });
 }

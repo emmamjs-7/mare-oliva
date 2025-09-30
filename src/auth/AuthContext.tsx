@@ -7,7 +7,7 @@ type AuthContextValue = {
   isAdmin: boolean;
   isUser: boolean;
   isAuthenticated: boolean;
-  isLoading: boolean;                   // 👈 NYTT
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   hasRole: (required: Role) => boolean;
@@ -34,8 +34,14 @@ export function AuthProvider({
     (async () => {
       try {
         const r = await fetch("/api/login", { credentials: "include" });
-        const data = await r.json();
-        setUser(data?.error ? null : (data as User));
+        if (r.status === 401) {
+          setUser(null);
+        } else if (r.ok) {
+          const data = await r.json();
+          setUser(data as User);
+        } else {
+          setUser(null);
+        }
       } catch {
         setUser(null);
       } finally {

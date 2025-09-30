@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Col, Form, Button, Nav } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import { add } from 'date-fns';
 import { useLoaderData, useNavigate, useRevalidator, useSearchParams } from 'react-router-dom';
 import { fmtDate, fmtTime, parseDate } from '../utils/date';
 import { INTERVAL, RESTAURANT_OPENING_TIME, RESTAURANT_CLOSING_TIME } from '../constants/config';
 import toast from 'react-hot-toast';
+
 type Booking = { id?: number; date: string; time: string; name: string; };
 
 
@@ -79,48 +81,47 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="py-5">
-      <div className="container">
-        {!justDate ? (
-          <div className="d-flex justify-content-center">
-            <Calendar className="border rounded p-3" minDate={new Date()} onClickDay={pickDay} />
-          </div>
-        ) : (
-          <Row className="justify-content-center">
-            <Col xs={12} className="text-center mb-3 fw-semibold">
-              {fmtDate(justDate)}{dateTime ? ` • ${fmtTime(dateTime)}` : ''}
-            </Col>
 
-            {dateTime && (
-              <Col xs="auto" className="mb-3">
-                <Form onSubmit={submit} className="d-flex gap-2">
-                  <Form.Control style={{ maxWidth: 280 }} placeholder="Your name:"
-                    value={name} onChange={(e) => setName(e.target.value)} />
-                  <Button type="submit" disabled={!name.trim()}>Book</Button>
-                </Form>
+    <div className="container">
+      {!justDate ? (
+        <div className="d-flex justify-content-center">
+          <Calendar className=" border rounded p-3" minDate={new Date()} onClickDay={pickDay} />
+        </div>
+      ) : (
+        <Row className="justify-content-center">
+          <Col xs={12} className="text-center mb-3 fw-semibold">
+            {fmtDate(justDate)}{dateTime ? ` • ${fmtTime(dateTime)}` : ''}
+          </Col>
+
+          {dateTime && (
+            <Col xs="auto" className="mb-3">
+              <Form onSubmit={submit} className="d-flex gap-2">
+                <Form.Control style={{ maxWidth: 280 }} placeholder="Your name:"
+                  value={name} onChange={(e) => setName(e.target.value)} />
+                <Button type="submit" disabled={!name.trim()}>Book</Button>
+              </Form>
+            </Col>
+          )}
+
+          {times.map((t, i) => {
+            const s = fmtTime(t);
+            const booked = bookedSet.has(s);
+            return (
+              <Col key={i} xs={4} sm={3} md={2} className="mb-3 text-center">
+                <Button type="button"
+                  className={`btn w-100 ${booked ? 'btn-outline-secondary' : 'btn-info'}`}
+                  onClick={() => pickTime(t)} disabled={booked}>
+                  {s} {booked && <small>(booked)</small>}
+                </Button>
               </Col>
-            )}
+            );
+          })}
 
-            {times.map((t, i) => {
-              const s = fmtTime(t);
-              const booked = bookedSet.has(s);
-              return (
-                <Col key={i} xs={4} sm={3} md={2} className="mb-3 text-center">
-                  <button type="button"
-                    className={`btn w-100 ${booked ? 'btn-outline-secondary' : 'btn-primary'}`}
-                    onClick={() => pickTime(t)} disabled={booked}>
-                    {s} {booked && <small>(booked)</small>}
-                  </button>
-                </Col>
-              );
-            })}
-
-            <Col xs={12} className="text-center mt-2">
-              <Button variant="link" onClick={() => navigate('/booking')}>Choose another date</Button>
-            </Col>
-          </Row>
-        )}
-      </div>
+          <Col xs={12} className="text-center mt-2">
+            <Nav.Link as={NavLink} to="/booking" className='another-date-link'>Choose another date</Nav.Link>
+          </Col>
+        </Row>
+      )}
     </div>
   );
 }

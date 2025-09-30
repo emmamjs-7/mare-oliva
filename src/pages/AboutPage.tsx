@@ -10,21 +10,28 @@ AboutPage.route = {
 export default function AboutPage() {
   return <>
     <Row>
-      <Col>
-        <h2 className="text-primary">About us</h2>
-
+      <Col md={8}>
+        <h2 className=" mt-4 text-dark">Contact</h2>
+        <address className='contact text-dark'>
+          Mare & Oliva<br />
+          Via Cimone 14<br />
+          Syracuse<br />
+          Italy<br />
+          <br />
+          Phone: <a href="tel:+1234567890">+1 234 567 890</a><br />
+          Email: <a href="mailto:info@mareoliva.com">info@mareoliva.com</a>
+        </address>
       </Col>
-    </Row>
-    <Row>
-      <Col md={6}>
-        <p>Founded in 2018 in the heart of Oslo, The Good Grocery began as a simple dream: bringing the finest quality ingredients to our community. What started as a small family business has grown into a trusted source for fresh, organic, and carefully curated products.</p>
-        <p>Our commitment goes beyond just selling groceries. We believe in supporting local farmers, choosing sustainable practices, and creating connections between our customers and the stories behind their food. Every product on our shelves is selected with care, ensuring both exceptional quality and responsible sourcing.</p>
+      <Col md={4} className='mt-4'>
+        <iframe
+          title="Mare & Oliva Location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6366.452768082268!2d15.284821395778357!3d37.07591472548023!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1313cea3650e5425%3A0xb177da6aaa549504!2sVia%20Cimone%2C%2014%2C%2096100%20Siracusa%20SR%2C%20Italy!5e0!3m2!1sen!2sde!4v1759136913254!5m2!1sen!2sde"
+          width="100%"
+          height="250"
+          style={{ border: 0 }}
+          loading="lazy"
+        ></iframe>
       </Col>
-      <Col md={6}>
-        <p>Today, we serve hundreds of families who share our passion for good food and conscious living. Our team works tirelessly to maintain the personal touch that makes grocery shopping a pleasure, not a chore.</p>
-        <p>We source directly from organic farms across Norway and Europe, building relationships that ensure freshness and fair practices. From our hand-picked produce to our artisanal bread selection, every item reflects our dedication to excellence.</p>
-        <p>Whether you're planning a simple weeknight dinner or hosting a special celebration, we're here to provide ingredients that make every meal memorable and meaningful.</p>
-      </Col>
-    </Row>
+    </Row >
   </>;
 }
