@@ -13,7 +13,7 @@ Database: SQLite with at least 3 tables (users, bookings, roles/view user_bookin
 
 Architecture: Custom hook (useBookings), utilities for time-slot handling (buildTimeSlots, isValidSlot)
 
-# ✨ Features
+## ✨ Features
 
 * Book a table by selecting date and time within restaurant opening hours
 
@@ -29,7 +29,8 @@ Architecture: Custom hook (useBookings), utilities for time-slot handling (build
 
 * Time slots validated against opening hours (18–23, 20-minute intervals)
 
-# ✅ Requirements Fulfilled
+### ✅ Requirements Fulfilled
+
 Base Requirements (G)
 
  React with TypeScript (Vite)
@@ -56,7 +57,7 @@ Base Requirements (G)
 
  Protected routes/endpoints
 
-# Advanced Requirements (VG)
+### Advanced Requirements (VG)
 
  Role-based access (admin vs user)
 
@@ -64,7 +65,8 @@ Base Requirements (G)
 
  PWA functionality (service worker + manifest)
 
-# 🗄️ Database
+### 🗄️ Database
+
 Tables:
 
 users
@@ -75,11 +77,11 @@ menu_items
 
 View: user_bookings that joins user to its bookings
 
-# Authentication & Roles
+### Authentication & Roles
 
 Login required to create and view personal bookings
 
-Protected routes: MyBookingsPage (user), AdminBookingsPage (admin only), MenuItemEditor edit/delete/create menu (admin only) 
+Protected routes: MyBookingsPage (user), AdminBookingsPage (admin only), MenuItemEditor edit/delete/create menu (admin only)
 
 Roles:
 
@@ -87,13 +89,13 @@ Admin: can view, edit, and delete all bookings and menu items
 
 User: can only view and delete their own bookings
 
-# 📱 PWA
+### 📱 PWA
 
 Service worker registered
 
 manifest.json included
 
-# 📌 Known Limitations
+### 📌 Known Limitations
 
 More validation in backend to ensure a hacker cant access another users bookings.
 
