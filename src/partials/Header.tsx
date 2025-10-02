@@ -41,6 +41,11 @@ export default function Header() {
                 <Nav.Link as={NavLink} to="/menu" onClick={close}>Menu</Nav.Link>
                 <Nav.Link as={NavLink} to="/booking" onClick={close}>Book a table</Nav.Link>
                 {isAdmin && <Nav.Link as={NavLink} to="/create-dish" onClick={close}>Add dish to menu</Nav.Link>}
+                {isAdmin && <Nav.Link as={NavLink} to="/adminbooking" onClick={close}>Edit bookings</Nav.Link>}
+              </Nav>
+              <Nav>
+                {isAuthenticated
+                  && <Nav.Link as={NavLink} to="/mypage" onClick={close}>My bookings</Nav.Link>}
               </Nav>
               <Nav>
                 {!isAuthenticated

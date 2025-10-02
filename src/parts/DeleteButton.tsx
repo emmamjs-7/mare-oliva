@@ -34,7 +34,7 @@ export default function DeleteButton({
     </Button>
 
     <Modal show={show} onHide={() => setShow(false)} centered>
-      <Modal.Header closeButton className="position-relative text-danger">
+      <Modal.Header closeButton className="position-relative text-danger py-5 text-center">
         <Modal.Title className="position-absolute start-50 translate-middle-x">Delete {name ?? `item #${id}`}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="text-center">
