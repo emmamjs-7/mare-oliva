@@ -5,15 +5,5 @@ export interface MenuItem {
   name: string;
   description?: string;
   price_euro: number;
-  priceLabel: string;
-  vegetarian: boolean;
-  vegan: boolean;
-  allergens: string[];
-  image_url?: string;
-}
-
-export interface CategoryGroup {
-  id: number;
-  name: string;
-  items: MenuItem[];
+  category?: string;
 }
