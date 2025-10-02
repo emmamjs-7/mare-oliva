@@ -34,12 +34,12 @@ export function AuthProvider({
     (async () => {
       try {
         const r = await fetch("/api/login", { credentials: "include" });
-        if (r.status === 401) {
+        if (r.ok) {
+          setUser(await r.json());
+        } else if (r.status === 401) {
           setUser(null);
-        } else if (r.ok) {
-          const data = await r.json();
-          setUser(data as User);
         } else {
+          console.error("Auth probe failed", r.status, await r.text());
           setUser(null);
         }
       } catch {
