@@ -1,11 +1,103 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🍝 Mare Oliva
 
-Currently, two official plugins are available:
+A restaurant table booking app built with **React + TypeScript (Vite)** and a **Minimal API backend (.NET)** with **SQLite**.  
+The app supports authentication, protected routes, full CRUD for bookings ane menu, responsive design, and time-slot handling within restaurant opening hours.
+ech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Frontend: React 18, TypeScript, Vite, React Router, React Bootstrap
+
+Backend: .NET Minimal API, SQLite
+
+Database: SQLite with at least 3 tables (users, bookings, roles/view user_bookings)
+
+Architecture: Custom hook (useBookings), utilities for time-slot handling (buildTimeSlots, isValidSlot)
+
+# ✨ Features
+
+* Book a table by selecting date and time within restaurant opening hours
+
+* View my bookings (filtered by logged-in user)
+
+* Admin page with list and edit/delete for all bookings
+  
+* Admin can access an editform when clicking on the menu item in menu (admin only)
+
+* Protected routes: My Page (user), Admin (admin only)
+
+* Custom hook for API handling (useBookings)
+
+* Time slots validated against opening hours (18–23, 20-minute intervals)
+
+# ✅ Requirements Fulfilled
+Base Requirements (G)
+
+ React with TypeScript (Vite)
+
+ Minimal API backend (.NET)
+
+ SQLite with at least 3 tables
+
+ Git with regular commits
+
+ CRUD for resource bookings and menu_items
+
+ Responsive design (mobile/tablet/desktop)
+
+ Custom hook: useBookings
+
+ React Router for navigation
+
+ Correct REST usage (GET/POST/PUT/DELETE)
+
+ Bootstrap/React Bootstrap for styling
+
+ User login
+
+ Protected routes/endpoints
+
+# Advanced Requirements (VG)
+
+ Role-based access (admin vs user)
+
+ Advanced data handling: SQLite view user_bookings
+
+ PWA functionality (service worker + manifest)
+
+# 🗄️ Database
+Tables:
+
+users
+
+bookings
+
+menu_items
+
+View: user_bookings that joins user to its bookings
+
+# Authentication & Roles
+
+Login required to create and view personal bookings
+
+Protected routes: MyBookingsPage (user), AdminBookingsPage (admin only), MenuItemEditor edit/delete/create menu (admin only) 
+
+Roles:
+
+Admin: can view, edit, and delete all bookings and menu items
+
+User: can only view and delete their own bookings
+
+# 📱 PWA
+
+Service worker registered
+
+manifest.json included
+
+# 📌 Known Limitations
+
+More validation in backend to ensure a hacker cant access another users bookings.
+
+---
 
 ## Expanding the ESLint configuration
 
