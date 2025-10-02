@@ -5,11 +5,13 @@ import MenuPage from "./pages/MenuPage";
 import HomePage from "./pages/HomePage";
 import BookingPage from "./pages/BookingPage";
 import type Route from "./interfaces/Route";
+import LoginPage from "./pages/loginPage";
 
 export default [
   AboutPage,
   NotFoundPage,
   MenuPage,
+  LoginPage,
   HomePage,
   BookingPage,
 ]
@@ -17,3 +19,4 @@ export default [
   .map(x => (({ element: createElement(x), ...x.route }) as Route))
   // sort by index (and if an item has no index, sort as index 0)
   .sort((a, b) => (a.index || 0) - (b.index || 0));
+
