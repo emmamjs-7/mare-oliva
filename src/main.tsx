@@ -11,6 +11,8 @@ import { AuthProvider } from "./auth/AuthContext";
 import { menuItemAction } from "./utils/menuItemAction";
 import MenuItemEditor from "./pages/MenuItemEditor";
 import { menuItemLoader } from "./utils/menuItemLoader";
+import AdminBookingsPage from "./pages/AdminBookingPage";
+import MyBookingPage from "./pages/MyBookingPage";
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
@@ -33,10 +35,13 @@ const router = createBrowserRouter([
         children: [
           { path: "create-dish", element: <MenuItemEditor /> },
           { path: "menu/:id/edit", element: <MenuItemEditor />, loader: menuItemLoader },
+          { path: "adminbooking", element: <AdminBookingsPage /> },
+
+
         ],
 
       },
-
+      { path: "mypage", element: <MyBookingPage />, },
       { path: "menu/:id", action: menuItemAction },
     ],
   },

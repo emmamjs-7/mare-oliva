@@ -1,7 +1,7 @@
 export default function HeaderImage() {
   return (
     <section
-      className="header-img position-relative overflow-hidden"
+      className="header-img position-relative overflow-hidden shadow"
       aria-label="Mare Oliva header image"
     >
       <picture>
