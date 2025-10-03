@@ -9,7 +9,7 @@ HomePage.route = {
 export default function HomePage() {
   return (
     <>
-      <Row className="align-items-center justify-content-center gy-4 my-4">
+      <Row className="align-items-center justify-content-center gy-2 my-4">
         <Col xs={12} md={7} className="order-1 order-md-1">
           <ResponsiveImage
             baseName="terrace"
