@@ -11,7 +11,8 @@ import {
   isValidSlot,
 } from "../utils/timeSlots";
 
-
+const toDateStr = (s: string | null | undefined) => (s ?? "").slice(0, 10);
+const toTimeStr = (s: string | null | undefined) => (s ?? "").slice(0, 5);
 
 BookingPage.route = {
   index: 3,
@@ -22,7 +23,7 @@ BookingPage.route = {
   loader: async ({ request }: { request: Request; }) => {
     try {
       const url = new URL(request.url);
-      const dateParam = (url.searchParams.get("date") ?? "").slice(0, 10);
+      const dateParam = toDateStr(url.searchParams.get("date"));
       if (!dateParam) return { bookings: [] as Booking[] };
 
       const res = await fetch(
@@ -31,13 +32,15 @@ BookingPage.route = {
       );
       if (!res.ok) return { bookings: [] as Booking[] };
 
+
+
       const data = await res.json();
       const rows = Array.isArray(data) ? (data as Booking[]) : [];
 
       const normalized = rows.map((b) => ({
         ...b,
-        date: (b.date ?? "").slice(0, 10),
-        time: (b.time ?? "").slice(0, 5),
+        date: toDateStr(b.date),
+        time: toTimeStr(b.time),
       }));
 
       normalized.sort((a, b) =>
@@ -59,31 +62,31 @@ export default function BookingPage() {
   const navigate = useNavigate();
   const { isAuthenticated, user, isLoading } = useAuth();
 
-  const selected = (params.get("date") ?? "").slice(0, 10);
-  const justDate = selected ? parseDate(selected) : null;
+  const selectedDate = toDateStr(params.get("date"));
+  const justDate = selectedDate ? parseDate(selectedDate) : null;
 
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const bookedTimes = useMemo(() => {
-    if (!selected) return [] as string[];
+    if (!selectedDate) return [] as string[];
     return bookings
-      .filter(b => (b.date ?? "").slice(0, 10) === selected)
-      .map(b => (b.time ?? "").slice(0, 5));
-  }, [bookings, selected]);
+      .filter(b => toDateStr(b.date) === selectedDate)
+      .map(b => toTimeStr(b.time));
+  }, [bookings, selectedDate]);
 
 
   const slots = useMemo(() => {
-    if (!selected) return [] as string[];
-    let s = buildTimeSlots(selected, bookedTimes);
+    if (!selectedDate) return [] as string[];
+    let s = buildTimeSlots(selectedDate, bookedTimes);
     const todayStr = fmtDate(new Date());
-    if (selected === todayStr) {
+    if (selectedDate === todayStr) {
       const nowHHmm = fmtTime(new Date());
       s = s.filter((t) => t > nowHHmm);
     }
     return s;
-  }, [selected, bookedTimes]);
+  }, [selectedDate, bookedTimes]);
 
   const pickDay = (day: Date) => {
     setSelectedTime("");
@@ -192,16 +195,16 @@ export default function BookingPage() {
 
           {slots.map((s) => {
             const booked = bookedTimes.includes(s);
-            const selected = selectedTime === s;
+            const isSelected = selectedTime === s;
             return (
               <Col key={s} xs={4} sm={3} md={2} className="mb-3 text-center">
                 <Button
                   type="button"
-                  className={`btn w-100 ${selected ? "btn-primary" : booked ? "btn-outline-secondary" : "btn-info"
+                  className={`btn w-100 ${isSelected ? "btn-primary" : booked ? "btn-outline-secondary" : "btn-info"
                     }`}
                   onClick={() => pickTime(s)}
                   disabled={booked || isSubmitting}
-                  aria-pressed={!!selected}
+                  aria-pressed={!!isSelected}
                   aria-label={`${s}${booked ? " (booked)" : ""}`}
                 >
                   {s} {booked && <small>(booked)</small>}
