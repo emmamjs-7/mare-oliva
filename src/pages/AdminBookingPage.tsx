@@ -4,7 +4,7 @@ import { useBookings } from "../utils/useBookings";
 import { useAuth } from "../auth/AuthContext";
 import type { Booking } from "../types/bookings";
 import BookingsTable from "../parts/BookingsTable";
-import { buildTimeSlots, isValidSlot } from "../utils/timeslots";
+import { buildTimeSlots, isValidSlot } from "../utils/timeSlots";
 
 export default function AdminBookingsPage() {
   const { isAdmin } = useAuth();
