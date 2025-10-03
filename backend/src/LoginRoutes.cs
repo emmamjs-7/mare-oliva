@@ -50,16 +50,13 @@ public static class LoginRoutes
         });
 
         App.MapGet("/api/login", (HttpContext context) =>
-  {
-      var user = GetUser(context);
-      if (user is null)
-      {
+   {
+       var user = GetUser(context);
+       if (user is null)
+           return RestResult.Parse(context, new { error = "No user is logged in." });
 
-          return Results.Json(new { error = "No user is logged in." }, statusCode: 401);
-      }
-
-      return Results.Json(user, statusCode: 200);
-  });
+       return RestResult.Parse(context, user);
+   });
 
         App.MapDelete("/api/login", (HttpContext context) =>
         {
