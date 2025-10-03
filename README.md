@@ -99,6 +99,8 @@ manifest.json included
 
 More validation in backend to ensure a hacker cant access another users bookings.
 
+Im getting 500 error when no user is logged in. Should be 401 error
+
 ---
 
 ## Expanding the ESLint configuration
