@@ -1,90 +1,127 @@
-// 'Globals'
-let cache; // holder for open cache
-let missingImageUrl = 'images/missing-image.png';
+// ==== Service Worker (robust prod) ====
+// Network-first för assets, NO-CACHE för /api, cache-säkerhetsbälten.
 
-let emulatedOffLineUrl = false;
+const CACHE_VERSION = "v6"; // <- ändra vid varje SW-ändring
+const CACHE_NAME = `app-cache-${CACHE_VERSION}`;
+const ASSETS = ["/", "images/missing-image.png"];
+const MISSING_IMG = "images/missing-image.png";
 
-// EVENTS:
+// --- Install ---
+self.addEventListener("install", (event) => {
+  event.waitUntil((async () => {
+    self.skipWaiting(); // snabbare aktivering
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(ASSETS);
+  })());
+});
 
-// The install event runs when the service worker
-// is registrered and we call onInstall
-self.addEventListener('install', e => onInstall());
+// --- Activate ---
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    self.clients.claim();
+    const keys = await caches.keys();
+    await Promise.all(
+      keys.filter(k => k.startsWith("app-cache-") && k !== CACHE_NAME)
+        .map(k => caches.delete(k))
+    );
+  })());
+});
 
-// The activate event runs when the install is done
-self.addEventListener('activate', e => onActivate());
+// --- Fetch ---
+self.addEventListener("fetch", (event) => {
+  event.respondWith(handle(event.request));
+});
 
-// The fetch event runs every time
-// the web page requests a resource
-self.addEventListener('fetch',
-  e => e.respondWith(cacher(e.request)));
+async function handle(request) {
+  const url = new URL(request.url);
+  const method = request.method;
+  const isGET = method === "GET";
 
+  // Skydd: hantera bara http/https — ignorera chrome-extension:, data:, blob:, ws:, wss:
+  if (!isHttp(url)) {
+    try { return await fetch(request); }
+    catch { return new Response("Unsupported scheme", { status: 400 }); }
+  }
 
-async function onInstall() {
-  // IMPORTANT! - Faster activation:
-  self.skipWaiting();
+  const isApi = url.pathname.startsWith("/api/");
+  const isNavigation =
+    request.mode === "navigate" ||
+    (isGET && request.headers.get("accept")?.includes("text/html"));
 
-  // Open the cache, if not done already
-  cache = cache || await caches.open('cache');
+  // 1) API → alltid nätet, med cookies, no-store; ALDRIG cache
+  if (isApi) {
+    try {
+      const apiReq = new Request(request, { credentials: "include", cache: "no-store" });
+      return await fetch(apiReq);
+    } catch {
+      return json503({ error: "Offline (API)" });
+    }
+  }
 
-  // Since we have a network first cache strategy
-  // only cache a few important files initially
-  // (the index.html file and "missing-image"-image)
-  return cache.addAll(['/', missingImageUrl]);
+  // 2) SPA-navigering → network-first, fallback till index vid offline
+  if (isNavigation) {
+    try {
+      return await fetch(request);
+    } catch {
+      const cache = await caches.open(CACHE_NAME);
+      const fallback = await cache.match("/");
+      return fallback ?? new Response("Offline", { status: 503 });
+    }
+  }
+
+  // 3) Övriga GET (bilder/css/js) → network-first + cacha säkra svar
+  if (isGET) {
+    const cache = await caches.open(CACHE_NAME);
+    try {
+      const net = await fetch(request);
+      if (shouldCache(request, net)) {
+        cache.put(request, net.clone());
+      }
+      return net;
+    } catch {
+      const cached = await cache.match(request);
+      if (cached) return cached;
+
+      if (looksLikeImage(url.pathname)) {
+        const missing = await cache.match(MISSING_IMG);
+        if (missing) return missing;
+      }
+      return new Response("Offline", { status: 503 });
+    }
+  }
+
+  // 4) Andra metoder (POST/PUT/DELETE/OPTIONS) som inte är /api → bara vidare
+  try {
+    return await fetch(request);
+  } catch {
+    return new Response("Offline", { status: 503 });
+  }
 }
 
-async function onActivate() {
-  // IMPORTANT! - Faster activation:
-  self.clients.claim();
+// --- Helpers ---
+function looksLikeImage(path) {
+  return /\.(png|jpg|jpeg|gif|webp|avif|svg)$/i.test(path);
 }
-
-// Cache strategy: 
-// Network first (get from cache only if no network)
-async function cacher(request) {
-  // Open the cache, if not done already
-  cache = cache || await caches.open('cache');
-
-  // If we are online fetch from the server
-  let response;
-  if (navigator.onLine && !emulatedOffLineUrl) {
-    response = await fetch(request).catch(e => response = null);
-  }
-
-  // If we failed to get a server response, use the cache
-  if (!response) {
-    response = await cache.match(request);
-    // failed to get it from cache too?
-    response = response || await fallbackResponses(request);
-  }
-
-  // Otherwise cache the response, if it is a GET request
-  else if (request.method === 'GET') {
-    cache.put(request, response.clone()); // no await needed!
-  }
-
-  return response;
+function isHttp(url) {
+  return url.protocol === "http:" || url.protocol === "https:";
 }
-
-// Try to generate som fallback responses
-async function fallbackResponses(request) {
-
-  let response, key, cacheKeys = await cache.keys();
-  let base = location.protocol + '//' + location.host + '/';
-  let route = request.url.split(base)[1] || '';
-  let extension = request.url.slice(-4);
-
-  if (route && !route.includes('/') && !route.includes('.')) {
-    // Could be a hard reload of a frontend route in a SPA
-    // so send our 'start page' (the frontend router should manage)
-    key = cacheKeys.find(({ url }) => url == base);
-  }
-
-  if (['.jpg', '.png', '.gif'].includes(extension)) {
-    // Probably an image we are missing
-    // so send our 'missing image' image ;)
-    let img = base + missingImageUrl;
-    key = cacheKeys.find(({ url }) => url === img);
-  }
-
-  response = key && await cache.match(key);
-  return response;
+function sameOrigin(url) {
+  return url.origin === self.location.origin;
+}
+function shouldCache(req, resp) {
+  // Cacha bara GET + http/https + same-origin + OK + "basic"
+  return (
+    req.method === "GET" &&
+    isHttp(new URL(req.url)) &&
+    sameOrigin(new URL(req.url)) &&
+    resp &&
+    resp.ok &&
+    resp.type === "basic"
+  );
+}
+function json503(obj) {
+  return new Response(JSON.stringify(obj), {
+    status: 503,
+    headers: { "Content-Type": "application/json" }
+  });
 }
